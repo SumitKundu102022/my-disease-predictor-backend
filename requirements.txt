@@ -1,5 +1,5 @@
-Flask
-tensorflow  # Or tensorflow-cpu, depending on your system
+Flask 
+tensorflow-cpu
 Pillow
 Werkzeug
 flask-cors
