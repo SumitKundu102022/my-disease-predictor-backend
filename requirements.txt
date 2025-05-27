@@ -1,0 +1,7 @@
+Flask
+tensorflow  # Or tensorflow-cpu, depending on your system
+Pillow
+Werkzeug
+flask-cors
+numpy
+gunicorn
