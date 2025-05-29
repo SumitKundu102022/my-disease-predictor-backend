@@ -10,8 +10,9 @@ from config import MODEL_PATH,UPLOAD_FOLDER,ALLOWED_EXTENSIONS  # Import the mod
 
 
 
+
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app,origins="https://mediscanai-eight.vercel.app")  # Enable CORS for all routes
 
 # Load the model globally on application startup
 try:
@@ -76,6 +77,7 @@ def preprocess_image(image_path):
 
         # THIS IS THE CRITICAL CHANGE: Use MobileNetV2's specific preprocessing
         img_array = preprocess_input(img_array)
+        
         print("Image preprocessed with MobileNetV2 specific preprocessing (scaled to -1 to 1).")
         print(f"Preprocessed image array shape: {img_array.shape}")
         return img_array
@@ -164,7 +166,7 @@ def predict():
     else:
         return jsonify({'error': 'Invalid file type'}), 400
 
-if __name__ == '__main__':
-    # Ensure the upload folder exists
-    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-    app.run(debug=True, host='0.0.0.0') # Run Flask app
+# if __name__ == '__main__':
+#     # Ensure the upload folder exists
+#     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+#     app.run(debug=True, host='0.0.0.0') # Run Flask app
