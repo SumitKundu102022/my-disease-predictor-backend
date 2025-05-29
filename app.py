@@ -166,7 +166,7 @@ def predict():
     else:
         return jsonify({'error': 'Invalid file type'}), 400
 
-if __name__ == '__main__':
-    # Ensure the upload folder exists
-    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-    app.run(debug=True, host='0.0.0.0') # Run Flask app
+# if __name__ == '__main__':
+#     # Ensure the upload folder exists
+#     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+#     app.run(debug=True, host='0.0.0.0') # Run Flask app
