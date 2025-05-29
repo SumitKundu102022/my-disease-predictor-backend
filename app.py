@@ -12,7 +12,8 @@ from config import MODEL_PATH,UPLOAD_FOLDER,ALLOWED_EXTENSIONS  # Import the mod
 
 
 app = Flask(__name__)
-CORS(app,origins="https://mediscanai-eight.vercel.app")  # Enable CORS for all routes
+CORS(app,origins="https://mediscanai-eight.vercel.app")  # Enable CORS for all routes (Global CORS)
+# CORS(app)  # Enable CORS for all routes (Local CORS)
 
 # Load the model globally on application startup
 try:
@@ -169,4 +170,12 @@ def predict():
 # if __name__ == '__main__':
 #     # Ensure the upload folder exists
 #     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-#     app.run(debug=True, host='0.0.0.0') # Run Flask app
+#     app.run(debug=True, host='0.0.0.0') # Run Flask app ---> (debug=FALSE) for GLOBAL mode
+
+
+# if __name__ == '__main__':
+#     # Ensure the upload folder exists
+#     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+#     app.run(debug=True, host='0.0.0.0') # Run Flask app ---> (debug=TRUE) for LOCAL mode ---> DON'T COMMIT THIS LINE
+
+
