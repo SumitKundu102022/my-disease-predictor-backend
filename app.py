@@ -15,6 +15,11 @@ app = Flask(__name__)
 CORS(app,origins="https://mediscanai-eight.vercel.app")  # Enable CORS for all routes (Global CORS)
 # CORS(app)  # Enable CORS for all routes (Local CORS)
 
+
+# --- NEW: Define a confidence threshold for relevant predictions ---
+CONFIDENCE_THRESHOLD = 0.70  # Adjust this value (e.g., 0.60, 0.75, 0.80) based on your model's performance
+# --- END NEW ---
+
 # Load the model globally on application startup
 try:
     model = tf.keras.models.load_model(MODEL_PATH)
@@ -135,11 +140,26 @@ def predict():
             
                         # DEBUGGING: Print raw probabilities
             print(f"Raw model output probabilities: {probabilities}")
-            # DEBUGGING: Find the predicted class index and name
+            # # DEBUGGING: Find the predicted class index and name
+            # predicted_index = np.argmax(probabilities)
+            # predicted_class_name = class_names[predicted_index] if predicted_index < len(class_names) else "UNKNOWN"
+            # print(f"Predicted class index: {predicted_index}, Predicted class name: {predicted_class_name}")
+            
+            # --- NEW: Check confidence threshold ---
+            max_confidence = np.max(probabilities)
             predicted_index = np.argmax(probabilities)
             predicted_class_name = class_names[predicted_index] if predicted_index < len(class_names) else "UNKNOWN"
-            print(f"Predicted class index: {predicted_index}, Predicted class name: {predicted_class_name}")
+
+            if max_confidence < CONFIDENCE_THRESHOLD:
+                os.remove(filepath) # Clean up file
+                return jsonify({
+                    'predictions': [], # No specific disease prediction
+                    'message': "The uploaded image does not appear to be related to the conditions our model is trained to detect, or the confidence is too low. Please upload an image of a skin condition for analysis.",
+                    'is_irrelevant': True # Flag for frontend to handle
+                }), 200
+            # --- END NEW ---
             
+            print(f"Predicted class index: {predicted_index}, Predicted class name: {predicted_class_name}")
             
             formatted_results = []
             # Zip probabilities with class names to create the output
@@ -161,6 +181,8 @@ def predict():
 
         except Exception as e:
             print(f"Error during prediction: {e}")
+            import traceback
+            traceback.print_exc() # Print full traceback to logs
             if os.path.exists(filepath):
                 os.remove(filepath) # Ensure file is cleaned up even on prediction error
             return jsonify({'error': f'Prediction error: {e}'}), 500
